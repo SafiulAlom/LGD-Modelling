@@ -7,9 +7,6 @@
 
 
 
-
-
-
 #================Die Grafik zur Investitionen der DKB 2016==================#
 
 library(ggplot2)
@@ -19,10 +16,10 @@ Investition<- c(19.6, 2.5, 9.0,12.0,8.1, 5.9, 3.5)
 names(Investition) <- c("Wohnen", "Gesundheit und Pflege", "
 Kommunen,Bildung und Forschung", "Private Haushalt",
                         "Umwelttechnik", "Energie und Versorgung",
-                        "Landwirtschaft und Ernährung")
+                        "Landwirtschaft und ErnÃ¤hrung")
 
 Branchen<-names(Investition)
-#Data-frame aus den Investitionen und den zugehörigen Branchen
+#Data-frame aus den Investitionen und den zugehÃ¶rigen Branchen
 Data<-data.frame(Branchen=Branchen,Investition= as.numeric(Investition))
 
 #Barplot zu den Investitionen
@@ -36,7 +33,6 @@ ggplot(data=Data, aes(x=Branchen, y=Investition),col = "red") +
         legend.text=element_text(size=12),
         legend.title=element_text(size=15))+ 
   ylab("Investition in Mrd.") + xlab("Branchen")
-
 
 
 #=========Datenimport und Datenbereinigung==========#
@@ -61,22 +57,22 @@ FLGD.QS <- FLGD.QS[4:length(FLGD.QS)]
 
 #Alle Tabellen kombinieren
 Data <- data.frame(FLGD.list, FLGD.Segm, FLGD.QS)
-#Alle Datensätze, wo Qualitaetsmangel gibt, loeschen
+#Alle DatensÃ¤tze, wo Qualitaetsmangel gibt, loeschen
 Data <-Data[Data$KD_QS=="",]
 
-#Die zur Modellierung benötigten Spalten festlegen
+#Die zur Modellierung benÃ¶tigten Spalten festlegen
 IMMO_NomW <- Data$IMMO_NomW_eng + Data$IMMO_NomW_weit
 Bars_NomW <- Data$BARS_NomW_eng + Data$BARS_NomW_weit
 EVTF_NomW <- Data$EVTF_NomW_eng + Data$EVTF_NomW_weit
 Data_NEW <- data.frame(Data[c(2:3, 10:13, 17:18)], IMMO_NomW, Data[21:22],
                        Bars_NomW, Data[25:26], EVTF_NomW, Data[5])
 
-#Löschen alle Datensätze, wo leere Felder gibt
+#LÃ¶schen alle DatensÃ¤tze, wo leere Felder gibt
 Data_NEW <-Data_NEW[complete.cases(Data_NEW),]
 
-#Herkunftsländer in 3 Bereichen segmentieren
-Euro_Land <- c("Österreich", "Schweiz", "Frankreich", 
-               "Niederlande", "Dänemark", "Luxemburg", "Schweden", "Finnland", "Norwegen")
+#HerkunftslÃ¤nder in 3 Bereichen segmentieren
+Euro_Land <- c("Ã–sterreich", "Schweiz", "Frankreich", 
+               "Niederlande", "DÃ¤nemark", "Luxemburg", "Schweden", "Finnland", "Norwegen")
 Data_NEW$KD_Herkunft <- as.character(Data_NEW$KD_Herkunft)
 Data_NEW$KD_Herkunft[Data_NEW$KD_Herkunft %in% Euro_Land] <- "EU_Ausland"
 Data_NEW$KD_Herkunft[Data_NEW$KD_Herkunft == "Inland"] <- "Deutschland"
@@ -89,7 +85,6 @@ str(Data_NEW)#Eigenschaften der Spalten
 save(Data_NEW, file = "FLGD_NEW.rda")
 
 
-
 #=========Grafische Darstellung des CART- und Bagging-Modell==========#
 
 #Daten Hochladen
@@ -99,7 +94,7 @@ library(randomForest)
 library(rpart)
 library(sfsmisc)
 
-#Wohnfläche pro m^2
+#WohnflÃ¤che pro m^2
 wflUnique <- sort(unique(miete$wfl))
 #Nettomiete pro m^2
 means <- sapply(wflUnique,function(i)
@@ -130,7 +125,7 @@ s <- seq(from = 0, to = 200, by = 0.01)
 
 #Grafik zur CART-Modell und nlM
 plot(wflUnique,means, pch=20, cex = 2, col = "red", type = "p",
-     xlab=expression("Wohnfläche["*m^2*"]"),
+     xlab=expression("WohnflÃ¤che["*m^2*"]"),
      ylab=expression("Nettomiete pro "*m^2*"[Euro]"))
 plotStep(wflUnique, l, cad.lag = FALSE,  ylim = c(0,20), xlim = c(0,200), main = "", add = TRUE, col = "black")
 lines(s, predict(m, list(wflUnique = s)), col = "green", lwd = 2)
@@ -138,14 +133,13 @@ legend("topright",legend  = c( "CART", "nlm"),
        col = c("black", "green"), lty = 1 , lwd = 2, cex =1, ncol = 2)
 
 #Grafik zur Bagging-Modellund nlM
-plot(wflUnique,means, pch=20, cex = 2, col = "red",xlab=expression("Wohnfläche["*m^2*"]"),
+plot(wflUnique,means, pch=20, cex = 2, col = "red",xlab=expression("WohnflÃ¤che["*m^2*"]"),
      ylab=expression("Nettomiete pro "*m^2*"[Euro]"))
 plotStep(wflUnique, , cad.lag = FALSE,  ylim = c(0,20), xlim = c(0,200),
-         xlab=expression("Wohnfläche["*m^2*"]"),
+         xlab=expression("WohnflÃ¤che["*m^2*"]"),
          ylab=expression("Nettomiete pro "*m^2*"[Euro]"), main = "", col = "blue", add = TRUE)
 lines(s, predict(m, list(wflUnique = s)), col = "green", lwd = 2)
 legend("topright",legend  = c("Bagging", "nlm"),col = c("blue", "green"), lwd = 2, cex =1, lty = 1, ncol = 2)
-
 
 
 #============Zusammenfassung der Datenmenge=============#
@@ -155,7 +149,7 @@ setwd("N:\\FB_Rating\\090 MitarbeiterInnen\\Alom\\FLGD")
 #Daten Hochladen
 load("FLGD_NEW.rda")
 
-#Benögtigte Merkmale festlegen
+#BenÃ¶gtigte Merkmale festlegen
 Data_NEW <- Data_NEW[c(1:8,16)]
 Data_NEW <-Data_NEW[Data_NEW$KD_Produkt !="Sonstiges",]
 
@@ -179,7 +173,6 @@ stargazer(x3, type = "latex",
           out =  "N:\\FB_Rating\\090 MitarbeiterInnen\\Alom\\Anwenndung\\TabellenundGrafiken\\Tebellen\\KD_Herkunft.tex", summary = FALSE, rownames = FALSE)
 
 
-
 #==================Test und Trainingsmenge=======================#
 
 #Pfade angeben
@@ -200,14 +193,14 @@ train <- Data_NEW[rows,]
 test <-Data_NEW[! rownames(Data_NEW) %in% rows,]
 
 
-#==========LGD vs Kundenherkunft für jedes Kundenprodukt===========#
+#==========LGD vs Kundenherkunft fÃ¼r jedes Kundenprodukt===========#
 
 #Notwendige Pakete Laden
 library(ggplot2)
 library(gridExtra)
 #Pfade angeben
 
-#Boxplot mit Trainingsdaten: LGD vs Kundenherkunft für jedes Kundenprodukt
+#Boxplot mit Trainingsdaten: LGD vs Kundenherkunft fÃ¼r jedes Kundenprodukt
 png("N:\\FB_Rating\\090 MitarbeiterInnen\\Alom\\Anwenndung\\Grafiken\\boxplot.png", height = 300, width = 700)
 ggplot(train)+
   geom_boxplot(aes(y= KD_FLGD,x=KD_Herkunft,fill=KD_Herkunft),outlier.size=0.1,notch=FALSE,notchwidth=0.8)+
@@ -219,7 +212,7 @@ ggplot(train)+
         legend.title=element_text(size=15))+
   ylab(label='LGD')+
   xlab('Kundenherkunft')+ ylim(c(-0.8,2.2))+
-  ggtitle('LGD vs Kundenherkunft für jedes Kundenprodukt') +  
+  ggtitle('LGD vs Kundenherkunft fÃ¼r jedes Kundenprodukt') +  
   theme(plot.title = element_text(hjust = 0.5, color = "darkred", size = 16,face="bold")) 
 dev.off()
 
@@ -230,7 +223,7 @@ dev.off()
 library(ggplot2)
 library(gridExtra)
 
-#LGD - Verteilung für jedes Kundenprodukt
+#LGD - Verteilung fÃ¼r jedes Kundenprodukt
 png("N:\\FB_Rating\\090 MitarbeiterInnen\\Alom\\Anwenndung\\Grafiken\\LGD.png", height = 300, width = 700)
 p2=ggplot(train)+
   geom_density(aes(x=KD_FLGD, fill=KD_Produkt),alpha=0.2)+
@@ -241,7 +234,7 @@ p2=ggplot(train)+
         legend.title=element_text(size=15))+
   xlab('LGD')+
   ylab('Dichte')+
-  ggtitle('LGD - Verteilung für jedes Kundenprodukt')+ xlim(c(-0.5, 1.5))+
+  ggtitle('LGD - Verteilung fÃ¼r jedes Kundenprodukt')+ xlim(c(-0.5, 1.5))+
   theme(plot.title = element_text(hjust = 0.5, color = "darkred", size = 16,face="bold"))
 p2
 dev.off()
@@ -266,7 +259,7 @@ dev.off()
 
 #===================Complixity-Parameter Tabelle===================#
 
-#Modell des Entscheidungsbäumes
+#Modell des EntscheidungsbÃ¤umes
 mod <- rpart(train$KD_FLGD~., data = train,
              control = rpart.control(xval = 10, minsplit  = 50, cp = 0))
 
@@ -279,7 +272,7 @@ stargazer(table_mod, type = "latex", out = "N:\\FB_Rating\\090 MitarbeiterInnen\
 
 #================Anzahl der Splits gegen Kreuzvalidierungsfehler=================#
 
-#Modell des Entscheidungsbäumes
+#Modell des EntscheidungsbÃ¤umes
 mod <- rpart(train$KD_FLGD~., data = train,
              control = rpart.control(xval = 10, minsplit  = 50, cp = 0))
 
@@ -292,13 +285,13 @@ text(70,1, "n = 17", col = "blue")
 dev.off()
 
 
-#===================Optimal zurückgeschnittener Subbaum===================#
+#===================Optimal zurÃ¼ckgeschnittener Subbaum===================#
 
 #CART-Modell
 mod <- rpart(train$KD_FLGD~., data = train,
              control = rpart.control(xval = 10, minsplit  = 50, cp = 0))
 
-#Optimal zurückgeschnittener Subbaum:
+#Optimal zurÃ¼ckgeschnittener Subbaum:
 #browseURL("http://www.statmethods.net/advstats/cart.html")
 pruning <- prune(mod, cp = mod$cptable[which.min(mod$cptable[,"xerror"]), "CP"])
 png("N:\\FB_Rating\\090 MitarbeiterInnen\\Alom\\Anwenndung\\TabellenundGrafiken\\Grafiken\\CART.png", height = 550, width =1200)
@@ -314,7 +307,7 @@ dev.off()
 mod <- rpart(train$KD_FLGD~., data = train,
              control = rpart.control(xval = 10, minsplit  = 50, cp = 0))
 
-#Optimal zurückgeschnittener Baum
+#Optimal zurÃ¼ckgeschnittener Baum
 pruning <- prune(mod, cp = mod$cptable[which.min(mod$cptable[,"xerror"]), "CP"])
 imp<-data.frame(vars=names(pruning$variable.importance),imp=as.numeric(pruning$variable.importance)/sum(pruning$variable.importance))
 png("N:\\FB_Rating\\090 MitarbeiterInnen\\Alom\\Anwenndung\\TabellenundGrafiken\\Grafiken\\Varimp_Pruning.png", height = 300, width =700)
@@ -335,9 +328,9 @@ p + coord_flip()
 dev.off()
 
 
-#====Anzahl der Bäume gegen Testfehler (Bagging-, RF-Modell)=====#
+#====Anzahl der BÃ¤ume gegen Testfehler (Bagging-, RF-Modell)=====#
 
-#Modell für Randomforest
+#Modell fÃ¼r Randomforest
 set.seed(421)
 model_random1<-randomForest(train$KD_FLGD~., data = train, 
                             ntree = 200, importance = TRUE,  mtry = 1, xtest = test[1:8], ytest = test$KD_FLGD)
@@ -361,10 +354,10 @@ model_random7<-randomForest(train$KD_FLGD~., data = train,
                             ntree = 200, importance = TRUE,  mtry = 7, xtest = test[1:8], ytest = test$KD_FLGD)
 model0 <- model_random7
 
-#Anzahl der Bäume gegen MSE-Fehler
+#Anzahl der BÃ¤ume gegen MSE-Fehler
 png("N:\\FB_Rating\\090 MitarbeiterInnen\\Alom\\Anwenndung\\TabellenundGrafikenSonst\\Grafiken\\Fehlerplot.PNG", height = 400, width =700)
 par(mfrow=c(1,2), lwd=2, font.axis=2, ps=16)
-plot(1:200, as.numeric(model_random1$test[[2]]), type = "l", ylim = c(0.174,0.202), ylab = "Testfehler", xlab = "Anzahl der Bäume")
+plot(1:200, as.numeric(model_random1$test[[2]]), type = "l", ylim = c(0.174,0.202), ylab = "Testfehler", xlab = "Anzahl der BÃ¤ume")
 lines(1:200, as.numeric(model_random2$test[[2]]), col = "red")
 lines(1:200, as.numeric(model_random$test[[2]]), col = "blue")
 lines(1:200, as.numeric(model_random4$test[[2]]), col = "gold")
@@ -375,8 +368,8 @@ legend("topright",  c("p = 1", "p = 2", "p = 3", "p = 4",
                       "p = 5", "p = 6", "p = 7"), ncol = 2, 
        col = c("black", "red", "blue", "gold", "brown", "pink", "cyan"), lty = 1)
 
-#Anzahl der Bäume gegen OOB-Fehler
-plot(1:200, as.numeric(model_random1$mse), type = "l", ylim = c(0.166,0.197), ylab = "OOB-Fehler", xlab = "Anzahl der Bäume")
+#Anzahl der BÃ¤ume gegen OOB-Fehler
+plot(1:200, as.numeric(model_random1$mse), type = "l", ylim = c(0.166,0.197), ylab = "OOB-Fehler", xlab = "Anzahl der BÃ¤ume")
 lines(1:200, as.numeric(model_random2$mse), col = "red")
 lines(1:200, as.numeric(model_random$mse), col = "blue")
 lines(1:200, as.numeric(model_random4$mse), col = "gold")
@@ -414,7 +407,7 @@ p<-ggplot(data=imp, aes(x=reorder(vars, imp), y=imp),col = "red") +
                                   size = 16,face="bold"))
 p2 <-p + coord_flip()
 
-#Modell für Randomforest
+#Modell fÃ¼r Randomforest
 set.seed(422)
 model_random<-randomForest(train$KD_FLGD~., data = train, 
                            ntree = 200, importance = TRUE,  mtry = 3)
@@ -446,7 +439,7 @@ multiplot(p2,p1, cols = 2)
 dev.off()
 
 
-#======================Tabelle der Fehlermaße========================#
+#======================Tabelle der FehlermaÃŸe========================#
 
 #Modell des CART-Verfahrens
 mod <- rpart(train$KD_FLGD~., data = train,
@@ -454,7 +447,7 @@ mod <- rpart(train$KD_FLGD~., data = train,
 #Bagging-modell
 set.seed(148)
 model0<-randomForest(train$KD_FLGD~., data = train, ntree = 200, mtry = 7)
-#Model für Randomforest
+#Model fÃ¼r Randomforest
 set.seed(422)
 model_random<-randomForest(train$KD_FLGD~., data = train, 
                            ntree = 200, importance = TRUE,  mtry = 3)
@@ -520,7 +513,7 @@ stargazer(Tab, type = "latex",
 
 
 #==Grafische Darstellung der Prognose gegen Realisierung ==#
-# Multiple-plot funktion für ggplot
+# Multiple-plot funktion fÃ¼r ggplot
 #
 multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
   library(grid)
@@ -566,7 +559,7 @@ mod <- rpart(train$KD_FLGD~., data = train,
 #Bagging-modell
 set.seed(148)
 model0<-randomForest(train$KD_FLGD~., data = train, ntree = 200, mtry = 7)
-#Model für Randomforest
+#Model fÃ¼r Randomforest
 set.seed(422)
 model_random<-randomForest(train$KD_FLGD~., data = train, 
                            ntree = 200, importance = TRUE,  mtry = 3)
@@ -582,7 +575,7 @@ prognose_random.training<-predict(object=model_random,newdata=train)
 #-----------------------------------------------------------------------
 #Prognose vs Realisiierung (Pruning)
 #Die auskommenrierten R-Objekten werden verwendet, wenn eine Grafik der Prognose vs Realisiierung
-#für die Testdaten erstellt werden muss.
+#fÃ¼r die Testdaten erstellt werden muss.
 data <- data.frame(x= train$KD_FLGD ,y =  Prognose_pruning.training) #Training
 #data <- data.frame(x= test$KD_FLGD ,y =  Prognose_pruning.test) #Test
 a0 <-ggplot(data)+ xlab('Realisierung') + ylab('Prognose')+ xlim(c(-0.25,1.25)) + ylim(c(-0.25,1.25))+
@@ -596,7 +589,7 @@ a0 <-ggplot(data)+ xlab('Realisierung') + ylab('Prognose')+ xlim(c(-0.25,1.25)) 
 #------------------------------------------------------------------------------
 #Mittelwert plot (Prognose vs Realisierung: Pruning)
 #Die auskommenrierten R-Objekten werden verwendet, wenn eine Grafik der Prognose vs Realisiierung
-#für die Testdaten erstellt werden muss.
+#fÃ¼r die Testdaten erstellt werden muss.
 actual1 <- train$KD_FLGD #Training
 #actual1 <- test$KD_FLGD #Test
 pred1 <-Prognose_pruning.training #Training
@@ -631,7 +624,7 @@ b0 <- ggplot(data1)+ xlab('Realisierung') + ylab('Prognose')+
 
 #Prognose vs Realisiierung (Bagging)
 #Die auskommenrierten R-Objekten werden verwendet, wenn eine Grafik der Prognose vs Realisiierung
-#für die Testdaten erstellt werden muss.
+#fÃ¼r die Testdaten erstellt werden muss.
 actual<-train$KD_FLGD #Training
 #actual<-train$KD_FLGD #Test
 result<-data.frame(actual=actual,predicted=prognose_bag.training) #Training
@@ -652,7 +645,7 @@ a <- ggplot(result)+
 #--------------------------------------------------------------------------
 #Mittelwert plot (Prognose vs Realisierung: Bagging)
 #Die auskommenrierten R-Objekten werden verwendet, wenn eine Grafik der Prognose vs Realisiierung
-#für die Testdaten erstellt werden muss.
+#fÃ¼r die Testdaten erstellt werden muss.
 actual0 <- train$KD_FLGD #Training
 actual0 <- test$KD_FLGD  #Test
 pred0 <-prognose_bag.training #Training
@@ -692,7 +685,7 @@ b <-ggplot(data0)+ xlab('Realisierung') + ylab('Prognose')+
 
 #Prognose vs Realisiierung (RF)
 #Die auskommenrierten R-Objekten werden verwendet, wenn eine Grafik der Prognose vs Realisiierung
-#für die Testdaten erstellt werden muss.
+#fÃ¼r die Testdaten erstellt werden muss.
 actual<-train$KD_FLGD #Training
 #actual <- test$KD_FLGD #Test
 result<-data.frame(actual=actual,predicted=prognose_random.training)
@@ -716,7 +709,7 @@ d <-ggplot(result)+
 
 #Mittelwert plot (Prognose vs Realisierung: RF)
 #Die auskommenrierten R-Objekten werden verwendet, wenn eine Grafik der Prognose vs Realisiierung
-#für die Testdaten erstellt werden muss.
+#fÃ¼r die Testdaten erstellt werden muss.
 actual <- train$KD_FLGD
 #actual <- test$KD_FLGD
 pred <-prognose_random.training
@@ -753,16 +746,16 @@ multiplot(a0,a,d, b0,b,c, cols = 2)
 dev.off()
 
 
-#==========Grafische Darstellung der Trennschärfe, Lorenzkurve und Gini-Koef===========#
-#Die auskommenrierten R-Objekten werden verwendet, wenn eine Grafik der Trennschärfe
-#für die Testdaten erstellt werden muss.
+#==========Grafische Darstellung der TrennschÃ¤rfe, Lorenzkurve und Gini-Koef===========#
+#Die auskommenrierten R-Objekten werden verwendet, wenn eine Grafik der TrennschÃ¤rfe
+#fÃ¼r die Testdaten erstellt werden muss.
 #Modell des CART-Verfahrens
 mod <- rpart(train$KD_FLGD~., data = train,
              control = rpart.control(xval = 10, minsplit  = 50, cp = 0))
 #Bagging-modell
 set.seed(148)
 model0<-randomForest(train$KD_FLGD~., data = train, ntree = 200, mtry = 7)
-#Model für Randomforest
+#Model fÃ¼r Randomforest
 set.seed(422)
 model_random<-randomForest(train$KD_FLGD~., data = train, 
                            ntree = 200, importance = TRUE,  mtry = 3)
@@ -814,7 +807,7 @@ c<- c(0, (cumsum(real_prog_prun$actual0) / sum(real_prog_prun$actual0)))
 d <- c(0, (cumsum(real_prog_bag$actual0) / sum(real_prog_bag$actual0)))
 e <- c(0, (cumsum(real_prog_random$actual0) / sum(real_prog_random$actual0)))
 #--------------------------------------------------------------------------------
-#Plot der Trannschärfe, Gini-Koef und Lorenzkurve
+#Plot der TrannschÃ¤rfe, Gini-Koef und Lorenzkurve
 png("N:\\FB_Rating\\090 MitarbeiterInnen\\Alom\\Anwenndung\\TabellenundGrafikenSonst\\Grafiken\\Lorenzkurve_Gemeinsam.png", height = 400, width =700)
 par(mfrow=c(1,1), lwd=2, font.axis=2, bty="n", ps=16)
 plot(a, b, type="l", cex=1.5, xlim=c(0,1), ylim=c(0,1), xlab="Prozentualer Anteil der Kreditnehmer", ylab="Prozentuale Anteil der LGD", col = "green")
