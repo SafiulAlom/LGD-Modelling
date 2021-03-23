@@ -85,7 +85,8 @@ save(Data_NEW, file = "FLGD_NEW.rda")
 #=========Grafische Darstellung des CART- und Bagging-Modell==========#
 
 #Daten Hochladen
-load("C:/Users/Himel/OneDrive/Studium/Bachelor (Wirtschaftsmathematik - B Sc.)/Extra/Finanz_EXTRA/Zeitreihenanalyse/An Introduction to Analysis of Financial Data with R/TXTDATEI/mieteRed.Rdata")
+load("C:/Users/Himel/OneDrive/Studium/Bachelor (Wirtschaftsmathematik - B Sc.)/Extra/Finanz_EXTRA/Zeitreihenanalyse/
+An Introduction to Analysis of Financial Data with R/TXTDATEI/mieteRed.Rdata")
 
 library(randomForest)
 library(rpart)
@@ -262,7 +263,8 @@ mod <- rpart(train$KD_FLGD~., data = train,
 
 #Complixity-Parameter Tabelle
 table_mod <- tail(mod$cptable, n = 6)
-stargazer(table_mod, type = "latex", out = "N:\\FB_Rating\\090 MitarbeiterInnen\\Alom\\Anwenndung\\TabellenundGrafiken\\Tebellen\\table_cp_tex.tex", summary = FALSE, rownames = FALSE)
+stargazer(table_mod, type = "latex", out = "N:\\FB_Rating\\090 MitarbeiterInnen\\Alom\\Anwenndung\\TabellenundGrafiken
+\\Tebellen\\table_cp_tex.tex", summary = FALSE, rownames = FALSE)
 
 
 
@@ -352,7 +354,8 @@ model_random7<-randomForest(train$KD_FLGD~., data = train,
 model0 <- model_random7
 
 #Anzahl der Bäume gegen MSE-Fehler
-png("N:\\FB_Rating\\090 MitarbeiterInnen\\Alom\\Anwenndung\\TabellenundGrafikenSonst\\Grafiken\\Fehlerplot.PNG", height = 400, width =700)
+png("N:\\FB_Rating\\090 MitarbeiterInnen\\Alom\\
+      Anwenndung\\TabellenundGrafikenSonst\\Grafiken\\Fehlerplot.PNG", height = 400, width =700)
 par(mfrow=c(1,2), lwd=2, font.axis=2, ps=16)
 plot(1:200, as.numeric(model_random1$test[[2]]), type = "l", ylim = c(0.174,0.202), ylab = "Testfehler", xlab = "Anzahl der Bäume")
 lines(1:200, as.numeric(model_random2$test[[2]]), col = "red")
@@ -505,7 +508,8 @@ names(Tab) <- c("Methode", "MAE", "RMSE", "TIC", "MAE", "RMSE", "TIC", "Janus")
 
 #Speichern als Tabelle
 stargazer(Tab, type = "latex",
-          out =  "N:\\FB_Rating\\090 MitarbeiterInnen\\Alom\\Anwenndung\\TabellenundGrafiken\\Tebellen\\Result.tex", summary = FALSE, rownames = FALSE)
+          out =  "N:\\FB_Rating\\090 MitarbeiterInnen\\Alom\\Anwenndung\\
+TabellenundGrafiken\\Tebellen\\Result.tex", summary = FALSE, rownames = FALSE)
 
 
 
@@ -604,7 +608,8 @@ Zusammenfassung1 <-Prog_actual.new1 %>%
 
 data1 <- data.frame(Zusammenfassung1)
 stargazer(data1, type = "latex",
-          out = "N:\\FB_Rating\\090 MitarbeiterInnen\\Alom\\Anwenndung\\TabellenundGrafiken\\Tebellen\\Zusammenfassung_random.tex", summary = FALSE)
+          out = "N:\\FB_Rating\\090 MitarbeiterInnen\\Alom\\Anwenndung
+\\TabellenundGrafiken\\Tebellen\\Zusammenfassung_random.tex", summary = FALSE)
 
 
 b0 <- ggplot(data1)+ xlab('Realisierung') + ylab('Prognose')+
